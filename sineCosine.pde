@@ -30,8 +30,6 @@ float period = 500.0;  // How many pixels before the wave repeats
 float dx;  // Value for incrementing X, a function of period and xspacing
 float[] yvalues;
 
-
-
 void setup() {
   fullScreen();
   background(255);
@@ -56,6 +54,8 @@ void draw() {
 
   pointerLineX2 = circleCenterX + (cos(teta) * (width * 3 / 20)); //r*cos(teta) + distance from (0,0)
   pointerLineY2 = circleCenterY + (sin(teta) * (width * 3 / 20)); // r*sin(teta) + distance from (0,0)
+
+  float waveLineOriginY =  ((2 * height / 3) + 120 + (sin(0.02) * 75))  ;
 
   createTrinagluarCircle();
 
@@ -93,8 +93,6 @@ void draw() {
     }
   }
 
-
-
   fill(0, 102, 204);
   noStroke();
 
@@ -103,7 +101,7 @@ void draw() {
   bouncingCircle.drawCircle();
 
   setupWave();
-  drawWave();
+  drawWave(waveLineOriginY);
   
   setupButtons();
 
@@ -111,7 +109,10 @@ void draw() {
   cosineBtn.drawButton();
   waveBtn.drawButton();
   circleBtn.drawButton();
+  
 }
+
+
 void createTrinagluarCircle() {
 
   line(0, 2 * height / 3, width, 2 * height / 3);
@@ -126,7 +127,6 @@ void createTrinagluarCircle() {
   textSize(20);
   text("Cos", 420 + (width * 3 / 10), height * 2 / 6);
 }
-
 
 void setUpPointer() {
   noStroke();
@@ -149,12 +149,13 @@ void setupWave() {
   }
 }
 
-void drawWave() {
+void drawWave(float origin) {
+ 
   noStroke();
   fill(0, 102, 204);
   for (int x = 1; x < yvalues.length; x++) {
     stroke(0);
-    line(x*xSpacing, (2 * height / 3)+ yvalues[x] + 120, x*xSpacing, 800);
+    line(x*xSpacing, (2 * height / 3)+ yvalues[x] + 120, x*xSpacing, origin); //   (2 * height / 3): line y + 120 margin + 
     noStroke();
     circle(x*xSpacing, (2 * height / 3) + yvalues[x] + 120, 16);
   }
@@ -169,6 +170,7 @@ void drawWave() {
 
     sineBtn.x = circleCenterX + 400;
     sineBtn.y =  40;
+
 
     cosineBtn.x = sineBtn.x  + sineBtn.rWidth + 20;
     cosineBtn.y = sineBtn.y;

@@ -59,4 +59,14 @@ break;
 
 }
 }
+
+public boolean isOverButton(){ // checking mouse cordinates for rectangle button.
+  if ((mouseX >= x && mouseX <= x+rWidth && 
+      mouseY >= y && mouseY <= y+rHeight)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 }

@@ -23,7 +23,7 @@ public BouncingCircle( ScaleWave scaleWave, float x, float y){
   this.x = x;
   this.y = y;
   
-}
+} 
 
 public void drawCircle(){
   

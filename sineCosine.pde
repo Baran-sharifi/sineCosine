@@ -20,6 +20,13 @@ Button cosineBtn = new Button(ButtonType.Cosine, 30, 75);
 Button waveBtn = new Button(ButtonType.Wave, 30, 75);
 Button circleBtn = new Button(ButtonType.BouncingCircle, 30, 75);
 
+boolean showSine = true;
+boolean showCosine = false;
+boolean showWave = false;
+boolean showCircle = false;
+
+ScaleWave scaleState;
+
 // waves variables
 int xSpacing = 20;   // How far apart should each horizontal location be spaced
 int waveWidth;
@@ -41,10 +48,9 @@ void setup() {
 }
 
 void draw() {
-  stroke(0);
   strokeWeight(4);
   background(255);
-
+  stroke(0);
   float mouseDx = mouseX - circleCenterX;
   float mouseDy = mouseY - circleCenterY;
   float distance = sqrt(sq(mouseDx)+sq(mouseDy));
@@ -57,19 +63,29 @@ void draw() {
 
   float waveLineOriginY =  ((2 * height / 3) + 120 + (sin(0.02) * 75))  ;
 
+
   createTrinagluarCircle();
+
+    setupButtons();
 
   //pointer line : x1 y1 are circle center
   line(circleCenterX, circleCenterY, pointerLineX2, pointerLineY2);
 
   // cosine line
+  
+  if (showCosine){
   stroke(255, 0, 0);
   line(circleCenterX, circleCenterY, pointerLineX2, circleCenterY );
-
+  scaleState = ScaleWave.Cosine;
+  }
   // sine line
+  
+ if (showSine){
   stroke(102, 178, 255);
   line(circleCenterX, circleCenterY, circleCenterX, pointerLineY2 );
-
+  scaleState = ScaleWave.Sine;
+ }
+  
   setUpPointer();
 
   clickedOnPointer = (dist(mouseX, mouseY, pointerLineX2, pointerLineY2) < 15) && mousePressed;
@@ -95,21 +111,22 @@ void draw() {
 
   fill(0, 102, 204);
   noStroke();
-
-  setupCircle();
-
-  bouncingCircle.drawCircle();
-
-  setupWave();
-  drawWave(waveLineOriginY);
   
-  setupButtons();
+  if (showCircle) {
+  setupCircle(scaleState);
+  bouncingCircle.drawCircle();
+  }
+
+  if (showWave){
+  setupWave(scaleState);
+  drawWave(waveLineOriginY);
+  }
 
   sineBtn.drawButton();
   cosineBtn.drawButton();
   waveBtn.drawButton();
   circleBtn.drawButton();
-  
+
 }
 
 
@@ -138,13 +155,18 @@ void setUpPointer() {
 
 // TODO: declaring wave as an object + connect buttons
 
-void setupWave() {
+void setupWave(ScaleWave scw) {
   float x = 0;
   theta += 0.02;
 
   x = theta ;
   for (int i = 0; i < yvalues.length; i++) {
+    
+    if (scw == ScaleWave.Sine){
     yvalues[i] = sin(x)*amplitude;
+    }else if (scw == ScaleWave.Cosine){
+      yvalues[i] = cos(x)*amplitude;
+    }
     x+=dx;
   }
 }
@@ -160,10 +182,11 @@ void drawWave(float origin) {
     circle(x*xSpacing, (2 * height / 3) + yvalues[x] + 120, 16);
   }
 }
-  void setupCircle() {
+  void setupCircle(ScaleWave sc) {
 
     bouncingCircle.x = (circleCenterX + width * 3 / 10) + 125;
     bouncingCircle.y = circleCenterY;
+    bouncingCircle.scaleWave = sc;
   }
 
   void setupButtons() {
@@ -181,3 +204,25 @@ void drawWave(float origin) {
     circleBtn.x = waveBtn.x + waveBtn.rWidth + 20;
     circleBtn.y = waveBtn.y;
   }
+    
+   
+    
+ void mouseClicked(){   
+    
+    if (sineBtn.isOverButton()) {
+    showSine = !showSine;
+  }
+  
+  if (cosineBtn.isOverButton()) {
+    showCosine = !showCosine;
+  }
+  
+  if (waveBtn.isOverButton()) {
+    showWave = !showWave;
+  }
+  
+  if (circleBtn.isOverButton()) {
+    showCircle = !showCircle;
+  }
+ }
+  

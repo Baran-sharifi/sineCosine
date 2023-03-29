@@ -1,4 +1,5 @@
 class Pointer{
+  
  public float x;
  public float y;
   public float size;
@@ -16,6 +17,5 @@ public void createPointer() {
   circle(this.x, this.y, this.size);
   
 }
-
 
 }

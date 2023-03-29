@@ -21,9 +21,8 @@ Button waveBtn = new Button(ButtonType.Wave, 30, 75);
 Button circleBtn = new Button(ButtonType.BouncingCircle, 30, 75);
 
 // waves variables
-
-int xspacing = 20;   // How far apart should each horizontal location be spaced
-int w;              // Width of entire wave
+int xSpacing = 20;   // How far apart should each horizontal location be spaced
+int waveWidth;
 
 float theta = 0.0;  // Start angle at 0
 float amplitude = 75.0;  // Height of wave
@@ -36,28 +35,11 @@ float[] yvalues;
 void setup() {
   fullScreen();
   background(255);
-  w = width+16;
-  dx = (TWO_PI / period) * xspacing;
-  yvalues = new float[w/xspacing];
+  waveWidth = width+16;
+  dx = (TWO_PI / period) * xSpacing;
+  yvalues = new float[waveWidth/xSpacing];
   circleCenterY = height * 2 / 6 ;
   circleCenterX = width * 3 / 8 ;
-  
-
-
-
-sineBtn.x = circleCenterX + 400;
-sineBtn.y =  40;
-
-cosineBtn.x = sineBtn.x  + sineBtn.rWidth + 20;
-cosineBtn.y = sineBtn.y;
-
-waveBtn.x = sineBtn.x;
-waveBtn.y = sineBtn.rHeight + 40 + 20;
-
-circleBtn.x = waveBtn.x + waveBtn.rWidth + 20;
-circleBtn.y = waveBtn.y;
-
-
 }
 
 void draw() {
@@ -92,13 +74,11 @@ void draw() {
 
   clickedOnPointer = (dist(mouseX, mouseY, pointerLineX2, pointerLineY2) < 15) && mousePressed;
 
-  // its clicking inside pointer (pressing)
-
 
   if (clickedOnPointer || isDragging ) {
     isDragging = true;
     if (distance > width * 3 / 20 ) {
-      mouseDx = (mouseDx / distance) * (width * 3 / 20);
+      mouseDx = (mouseDx / distance) * (width * 3 / 20); // modify center-mouse distance to radius
       mouseDy = (mouseDy / distance) * (width * 3 / 20);
       teta = atan2(mouseDy, mouseDx);
     } else {
@@ -112,27 +92,28 @@ void draw() {
       isDragging = false;
     }
   }
-  
-  bouncingCircle.x = (circleCenterX + width * 3 / 10) + 125;
-  bouncingCircle.y = circleCenterY;
-  fill(0,102,204);
+
+
+
+  fill(0, 102, 204);
   noStroke();
+
+  setupCircle();
+
   bouncingCircle.drawCircle();
-  
+
   setupWave();
   drawWave();
   
+  setupButtons();
+
   sineBtn.drawButton();
   cosineBtn.drawButton();
   waveBtn.drawButton();
   circleBtn.drawButton();
-  
-  
-  
-  
-  
 }
- void createTrinagluarCircle() {
+void createTrinagluarCircle() {
+
   line(0, 2 * height / 3, width, 2 * height / 3);
   noFill();
   circle( width * 3 / 8, height * 2 / 6, width * 3 / 10);
@@ -147,45 +128,54 @@ void draw() {
 }
 
 
- void setUpPointer() {
+void setUpPointer() {
   noStroke();
-  fill(0,128,255);
+  fill(0, 128, 255);
   pointer.x = pointerLineX2;
   pointer.y = pointerLineY2;
   pointer.createPointer();
 }
 
-//public void drawGuidline(){
-  
-//  stroke(0);
-//  fill(125);
-//  line(pointer.x, pointer.y, circleCenterX, ); // sine line
-//  line(poiner.x, pointer.y, , );    // cosine line
-//}
+// TODO: declaring wave as an object + connect buttons
 
-  void setupWave(){
-
+void setupWave() {
   float x = 0;
   theta += 0.02;
 
-  // For every x value, calculate a y value with sine function
-   x = theta ;
+  x = theta ;
   for (int i = 0; i < yvalues.length; i++) {
     yvalues[i] = sin(x)*amplitude;
     x+=dx;
   }
-  
-  }
+}
 
-void drawWave(){
-noStroke();
-  fill(0,102,204);
-  // A simple way to draw the wave with an ellipse at each location
+void drawWave() {
+  noStroke();
+  fill(0, 102, 204);
   for (int x = 1; x < yvalues.length; x++) {
     stroke(0);
-    line(x*xspacing, (2 * height / 3)+ yvalues[x] + 120, x*xspacing, 800);
+    line(x*xSpacing, (2 * height / 3)+ yvalues[x] + 120, x*xSpacing, 800);
     noStroke();
-    circle(x*xspacing, (2 * height / 3) + yvalues[x] + 120, 16);
-
+    circle(x*xSpacing, (2 * height / 3) + yvalues[x] + 120, 16);
   }
 }
+  void setupCircle() {
+
+    bouncingCircle.x = (circleCenterX + width * 3 / 10) + 125;
+    bouncingCircle.y = circleCenterY;
+  }
+
+  void setupButtons() {
+
+    sineBtn.x = circleCenterX + 400;
+    sineBtn.y =  40;
+
+    cosineBtn.x = sineBtn.x  + sineBtn.rWidth + 20;
+    cosineBtn.y = sineBtn.y;
+
+    waveBtn.x = sineBtn.x;
+    waveBtn.y = sineBtn.rHeight + 40 + 20;
+
+    circleBtn.x = waveBtn.x + waveBtn.rWidth + 20;
+    circleBtn.y = waveBtn.y;
+  }

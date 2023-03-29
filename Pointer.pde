@@ -11,7 +11,6 @@ this.size = size;
  
 }
 
-
 public void createPointer() {
   
   circle(this.x, this.y, this.size);
